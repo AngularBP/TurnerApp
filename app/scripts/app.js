@@ -12,6 +12,10 @@ Neo.module.PageTurner.config(function ($routeProvider) {
       templateUrl: 'views/signin.html',
       controller: 'Neo.controller.SignIn'
     })
+    .when('/signup', {
+      templateUrl: 'views/signup.html',
+      controller: 'Neo.controller.SignUp'
+    })
     .otherwise({
       redirectTo: '/'
     });
