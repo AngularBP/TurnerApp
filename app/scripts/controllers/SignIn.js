@@ -1,9 +1,5 @@
-'use strict';
-// var my = my || {};
-// var Neo = Neo || {};
-// Neo.controller = Neo.controller || {};
 //Controller SignIn
-Neo.controller.SignIn = my.Class(Neo.controller.Base, {
+Neo.controller.SignIn = Neo.define(Neo.controller.Base, {
   constructor: function(scope) {
     Neo.controller.SignIn.Super.call(this, scope);
   },

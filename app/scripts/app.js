@@ -1,10 +1,3 @@
-'use strict';
-
-//Namesapce
-var Neo = Neo || {};
-Neo.module = Neo.module || {};
-Neo.controller = Neo.controller || {};
-
 //Module PageTurner
 Neo.module.PageTurner = angular.module('PageTurner',[
   'ngCookies',

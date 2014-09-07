@@ -1,8 +1,3 @@
-
-'use strict';
-// var my = my || {};
-// var Neo = Neo || {};
-// Neo.controller = Neo.controller || {};
 /**
  * Base controller for all controllers.
  * Use this as a template for all future controllers
@@ -11,7 +6,7 @@
  *
  * @author Neo [mcchae7@gmail.com]
  */
-Neo.controller.Base = my.Class({
+Neo.controller.Base = Neo.define({
 	//use the "STATIC" field to define static fields
 	STATIC: null,
 	$scope: null,
