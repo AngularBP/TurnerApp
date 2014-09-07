@@ -2,7 +2,7 @@
 
 var Neo = {
 	define: function() {
-		return my.Class(arguments);
+		return my.Class.apply(my,arguments);
 	}
 };
 //namespace
