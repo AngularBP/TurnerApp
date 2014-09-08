@@ -10,6 +10,8 @@ Neo.controller.Base = Neo.define({
 	//use the "STATIC" field to define static fields
 	STATIC: null,
 	$scope: null,
+	$inject: ['scope'],
+	oType: 'Neo.controller.Base',
 	/**
 	 * Initialize Notes Controller
 	 * @param $scope, current controller scope
@@ -43,4 +45,3 @@ Neo.controller.Base = Neo.define({
 	destroy: function() {
 	}
 });
-Neo.controller.Base.$inject = ['$scope'];

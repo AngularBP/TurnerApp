@@ -1,12 +1,12 @@
 //Module PageTurner
-Neo.module.PageTurner = angular.module('PageTurner',[
+Neo.PageTurner = angular.module('PageTurner',[
   'ngCookies',
   'ngResource',
   'ngSanitize',
   'ngRoute'
 ]);
 //Config
-Neo.module.PageTurner.config(function ($routeProvider) {
+Neo.PageTurner.config(function ($routeProvider) {
   $routeProvider
     .when('/', {
       templateUrl: 'views/signin.html',
