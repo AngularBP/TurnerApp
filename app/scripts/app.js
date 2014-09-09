@@ -1,8 +1,5 @@
 //Module PageTurner
 Neo.PageTurner = angular.module('PageTurner',[
-  'ngCookies',
-  'ngResource',
-  'ngSanitize',
   'ngRoute'
 ]);
 //Config
