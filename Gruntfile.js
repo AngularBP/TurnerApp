@@ -398,8 +398,8 @@ module.exports = function (grunt) {
         options: {
           replacements: [
             {
-              pattern: '<script type="text/javascript" id="build-mode">Neo.BuildMode = "dev";</script>',
-              replacement: '<script type="text/javascript" id="build-mode"></script>'
+              pattern: 'scripts/dev.conf.js',
+              replacement: 'scripts/prod.conf.js'
             }
           ]
         }
@@ -411,8 +411,8 @@ module.exports = function (grunt) {
         options: {
           replacements: [
             {
-              pattern: '<script type="text/javascript" id="build-mode"></script>',
-              replacement: '<script type="text/javascript" id="build-mode">Neo.BuildMode = "dev";</script>'
+              pattern: 'scripts/prod.conf.js',
+              replacement: 'scripts/dev.conf.js'
             }
           ]
         }
