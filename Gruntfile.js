@@ -15,6 +15,8 @@ module.exports = function (grunt) {
   // Time how long tasks take. Can help when optimizing build times
   require('time-grunt')(grunt);
 
+  require('grunt-string-replace')(grunt);
+
   // Configurable paths for the application
   var appConfig = {
     app: require('./bower.json').appPath || 'app',
@@ -387,9 +389,36 @@ module.exports = function (grunt) {
         configFile: 'test/karma.conf.js',
         singleRun: true
       }
+    },
+    'string-replace': {
+      dist:{
+        files: {
+          '<%= yeoman.app %>/index.html': '<%= yeoman.app %>/index.html'
+        },
+        options: {
+          replacements: [
+            {
+              pattern: '<script type="text/javascript" id="build-mode">Neo.BuildMode = "dev";</script>',
+              replacement: '<script type="text/javascript" id="build-mode"></script>'
+            }
+          ]
+        }
+      },
+      dev:{
+        files: {
+          '<%= yeoman.app %>/index.html': '<%= yeoman.app %>/index.html'
+        },
+        options: {
+          replacements: [
+            {
+              pattern: '<script type="text/javascript" id="build-mode"></script>',
+              replacement: '<script type="text/javascript" id="build-mode">Neo.BuildMode = "dev";</script>'
+            }
+          ]
+        }
+      }
     }
   });
-
 
   grunt.registerTask('serve', 'Compile then start a connect web server', function (target) {
     if (target === 'dist') {
@@ -397,6 +426,7 @@ module.exports = function (grunt) {
     }
 
     grunt.task.run([
+      'string-replace:dev',
       'clean:server',
       'wiredep',
       'concurrent:server',
@@ -420,6 +450,7 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('build', [
+    'string-replace:dist',
     'clean:dist',
     'wiredep',
     'useminPrepare',
