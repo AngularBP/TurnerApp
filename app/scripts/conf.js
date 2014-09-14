@@ -1,9 +1,9 @@
 //e2e mock and live
 //if there is no mock url, then live will be used for mock.
-Neo.e2e = {
+Neo.Endpoint = {
 	config: {
 		path: {
-			'Base':{
+			base:{
 				mock: './mock',
 				live: './api'
 			}

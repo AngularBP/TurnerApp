@@ -3,6 +3,16 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
 @import "bootstrap-sass-official/assets/stylesheets/_bootstrap.scss";
 // endbower
 
+html, body {
+  height:100%;
+  width:100%;
+}
+
+.pt-container {
+  width:100%;
+  height:100%;
+}
+
 .pt-signin {
   padding-top: 40px;
   padding-bottom: 40px;
@@ -42,4 +52,44 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
     border-top-left-radius: 0;
     border-top-right-radius: 0;
   }
+}
+
+.pt-category-list {
+  height: 100%;
+  width: 50%;
+  border: 1px !important;
+  border-color:#000000;
+  -webkit-border-radius: 10px;
+  z-index: 99;
+}
+
+.pt-category-book-list {
+  height: 100%;
+  width: 50%;
+}
+
+.pt-page-list {
+  position: relative;
+  height:100%;
+  width: 100%;
+  overflow:hidden;
+  .pt-page-ul {
+    .pt-page-li {
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      -webkit-transition: all 0.2s ease;
+      .pt-music-sheet {
+        display: block;
+        height: 100%;
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        border: 1px;
+        border-color:#000000;
+        -webkit-border-radius: 10px;
+        -webkit-box-shadow: 2px 2px 2px 2px #444444;
+      }
+    }
+  }  
 }

@@ -4,6 +4,10 @@ var Neo = {
 	STATIC: {
 		O_TYPE:{
 			controller:'.controller.'
+		},
+		BUILD_MODE: {
+			dev:'dev',
+			prod:'prod'
 		}
 	},
 	define: function() {
@@ -20,6 +24,22 @@ var Neo = {
 			}
 		}
 		return newClass;
+	},
+	getUrl: function(id,dataId) {
+		var path,basePath,url,devMode;
+		devMode = this.buildMode === this.STATIC.BUILD_MODE.dev ? true : false;
+		basePath = devMode ? this.Endpoint.config.path.base.mock : this.Endpoint.config.path.base.live;
+		url = this.Endpoint.url[id];
+		if (!url) {
+			throw "Unknown url"
+		}
+		if (devMode) {
+			url = url.mock ? url.mock : url.live;
+			url = basePath + '/' + url + '.json';
+		} else {
+			url = basePath + '/' + url.live;
+		}
+		return url;
 	}
 };
 

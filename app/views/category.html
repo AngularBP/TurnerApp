@@ -1,0 +1,17 @@
+<div class="pt-category-list list-container">
+	<div class="pt-category-header">
+		<span class="pt-category+- hide">
+			<a href="">+</a>
+			<a href="">-</a>
+		</span>
+		<span>Category</span>
+		<a href="" class="pt-edit-category">Edit</a>
+		<a href="" class="pt-done-category hide">Done</a>
+	</div>
+	<ul class="pt-category-ul">
+		<li ng-repeat="category in categories" class="pt-category-li pt-category-id-{{categoty.id}}">
+			<span class='pt-category-li-{{category.color}}'>{{category.title[0]}}</span>
+			<span ng-click="onClickCategory(category.id)">{{category.title}}</span>
+		</li>
+	</ul>
+</div>

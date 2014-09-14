@@ -1,0 +1,23 @@
+<div class="pt-page-list list-container">
+	<div class="pt-page-list-header list-unstyled hide">
+    	<span class="pt-page+-"><a href="">+</a><a href="">-</a></span><span>{{book.title}}</span><a href="" class="pt-edit-page">Edit</a><a href="" class="pt-done-page">Done</a>
+	</div>
+	<ul class="pt-page-ul list-unstyled">
+	    <li ng-repeat="page in pages" class="pt-page-li pt-page-id-{{page.id}}" style="left:{{$index == 0 ? 0 : windowWidth}}px;">
+	        <img ng-click="onClickPage($event)" alt="{{page.url}}" src="{{page.url}}" class="pt-music-sheet"/>
+	    </li>
+	</ul>
+	<ul class="pt-page-index-ul list-unstyled hide">
+	    <li ng-repeat="page in pages" class="pt-page-index-li pt-page-index-id-{{page.id}} {{($index !== 0 ? '' : 'selected')}}">
+	        {{(page.url.split('/')[page.url.split('/').length-1])}}
+	    </li>
+	</ul>
+	<ul class="pt-page-control-ul list-unstyled hide">
+	    <li class="pt-play-pause-li">
+	        <a>&gt;</a>
+	    </li>
+	    <li class="pt-rec-li">
+	        <a>o</a>
+	    </li>
+	</ul>
+</div>

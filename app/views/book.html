@@ -1,0 +1,11 @@
+<div class="pt-category-book-list list-container">
+	<div class="pt-category-book-list-header">
+	    <span class="pt-book+- hide"><a href="">+</a><a href="">-</a></span><span>{{category.title}}</span><a href="" class="pt-edit-book">Edit</a><a href="" class="pt-done-book hide">Done</a>
+	</div>
+	<div class="pt-book-search"></div>
+	<ul class="pt-book-ul">
+	    <li ng-repeat="book in books" class="pt-book-li pt-book-id-{{book.id}}">
+	        <a href="" class='pt-book-li-{{category.color}}'>{{category.title[0]}}</a><a ng-click="onClickBook(book.id)">{{book.title}}</a>
+	    </li>
+	</ul>
+</div>
