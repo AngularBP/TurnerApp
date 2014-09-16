@@ -1,9 +1,9 @@
 //Controller Book
-Neo.controller.Book = Neo.define(Neo.controller.Base, {
+PT.controller.Book = PT.define(PT.controller.Base, {
 	$inject:['$scope'],
-	oType:'Neo.controller.Book',
+	oType:'PT.controller.Book',
 	constructor: function(scope) {
-		Neo.controller.Book.Super.call(this, scope);
+		PT.controller.Book.Super.call(this, scope);
 	},
 	initScope: function() {
 	}

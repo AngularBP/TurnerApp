@@ -1,9 +1,9 @@
 //Controller Page
-Neo.controller.Page = Neo.define(Neo.controller.Base, {
+PT.controller.Page = PT.define(PT.controller.Base, {
 	$inject:['$scope'],
-	oType:'Neo.controller.Page',
+	oType:'PT.controller.Page',
 	constructor: function(scope) {
-		Neo.controller.Page.Super.call(this, scope);
+		PT.controller.Page.Super.call(this, scope);
 	},
 	initScope: function() {
 	}

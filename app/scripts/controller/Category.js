@@ -1,9 +1,9 @@
 //Controller Category
-Neo.controller.Category = Neo.define(Neo.controller.Base, {
+PT.controller.Category = PT.define(PT.controller.Base, {
 	$inject:['$scope'],
-	oType:'Neo.controller.Category',
+	oType:'PT.controller.Category',
 	constructor: function(scope) {
-		Neo.controller.Category.Super.call(this, scope);
+		PT.controller.Category.Super.call(this, scope);
 	},
 	initScope: function() {
 	}

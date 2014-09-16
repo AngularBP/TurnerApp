@@ -1,9 +1,11 @@
 'use strict';
 
-var Neo = {
+var PT = {
 	STATIC: {
 		O_TYPE:{
-			controller:'.controller.'
+			controller: 'controller',
+			provider: 'provider', 
+			base: 'Base', 
 		},
 		BUILD_MODE: {
 			dev:'dev',
@@ -11,16 +13,21 @@ var Neo = {
 		}
 	},
 	define: function() {
-		var newClass,oType,oTypes;
+		var newClass,o,oType,oTypes,isBase,namespaces;
 		oTypes = this.STATIC.O_TYPE;
 		newClass = my.Class.apply(my,arguments);
-		if (arguments.length === 1) {
-			newClass.$inject = arguments[0].$inject;
-		} else {
-			newClass.$inject = arguments[1].$inject;
-			oType = arguments[1].oType;
-			if (oType.indexOf(oTypes.controller) > -1) {
-				Neo.PageTurner.controller(oType, newClass);
+		o = arguments.length === 1 ? arguments[0] : arguments[1];
+		newClass.$inject = o.$inject;
+		oType = o.oType;
+		//root.module.category.name
+		namespaces = oType.split('.');
+		isBase = namespaces[namespaces.length - 1] === oTypes.base ? true : false;
+		category = namespaces[1];
+		if (!isBase) {
+			if (category === oTypes.controller) {
+				PT.controller(oType, newClass);
+			} else if (category === oTypes.provider) {
+				PT.provider(oType, newClass);
 			}
 		}
 		return newClass;
@@ -44,5 +51,6 @@ var Neo = {
 };
 
 //namespace
-Neo.module = Neo.module || {};
-Neo.controller = Neo.controller || {};
+PT.module = PT.module || {};
+PT.controller = PT.controller || {};
+PT.provider = PT.provider || {};

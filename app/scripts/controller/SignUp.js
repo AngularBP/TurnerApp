@@ -1,9 +1,9 @@
 //Controller SignIn
-Neo.controller.SignUp = Neo.define(Neo.controller.Base, {
+PT.controller.SignUp = PT.define(PT.controller.Base, {
 	$inject:['$scope'],
-	oType:'Neo.controller.SignUp',
+	oType:'PT.controller.SignUp',
 	constructor: function(scope) {
-		Neo.controller.SignUp.Super.call(this, scope);
+		PT.controller.SignUp.Super.call(this, scope);
 	},
 	initScope: function() {
 		var s = this.$scope;

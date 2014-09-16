@@ -1,0 +1,14 @@
+{
+	"user":{
+		"id":"mcchae7@gmail.com"
+		,"name":"Neo"
+	}
+	,"category":[
+		{
+			"id":"1"
+			, "color":"green"
+			, "title":"Jazz"
+			, "description":"Jazz music scores"
+		}
+	]
+}

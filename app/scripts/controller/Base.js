@@ -6,21 +6,23 @@
  *
  * @author Neo [mcchae7@gmail.com]
  */
-Neo.controller.Base = Neo.define({
+PT.controller.Base = PT.define({
 	//use the "STATIC" field to define static fields
 	STATIC: null,
+	//config object
 	$scope: null,
 	$inject: ['scope'],
-	oType: 'Neo.controller.Base',
+	//module name
+	oType: 'PT.controller.Base',
 	/**
 	 * Initialize Notes Controller
 	 * @param $scope, current controller scope
 	 */
 	constructor: function(scope) {
-		this.init(scope);
-	},
-	init: function(scope) {
 		this.$scope = scope;
+		this.init();
+	},
+	init: function() {
 		this.initEvents();
 		this.initScope();
 	},
@@ -37,7 +39,9 @@ Neo.controller.Base = Neo.define({
 	 */
 	initScope: function() {
 	},
-
+	getScope: function(){
+		return this.$scope;
+	},
 	/**
 	 * Triggered when controller is about
 	 * to be destroyed, clear all remaining values.

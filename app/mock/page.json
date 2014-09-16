@@ -1,0 +1,29 @@
+{
+	"book":{
+		"id":"1"
+		, "title":"Autumn Leaves"
+	}
+	, "page": [
+		{
+			"id":"1"
+			,"url":"/files/autumnleaves/AutumnLeaves-1.png"
+			,"ms":"1000"
+		}, {
+			"id":"2"
+			,"url":"/files/autumnleaves/AutumnLeaves-2.png"
+			,"ms":"1000"
+		}, {
+			"id":"3"
+			,"url":"/files/autumnleaves/AutumnLeaves-3.png"
+			,"ms":"1000"
+		}, {
+			"id":"4"
+			,"url":"/files/autumnleaves/AutumnLeaves-4.png"
+			,"ms":"1000"
+		}, {
+			"id":"5"
+			,"url":"/files/autumnleaves/AutumnLeaves-5.png"
+			,"ms":"1000"
+		}
+	]
+}

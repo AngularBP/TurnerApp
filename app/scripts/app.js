@@ -1,2 +1,2 @@
 //Module PageTurner
-Neo.PageTurner = angular.module('PageTurner',['ui.router']);
+PT = angular.module('PT',['ui.router','PT.provider.Http']);

@@ -1,6 +1,6 @@
 //e2e mock and live
 //if there is no mock url, then live will be used for mock.
-Neo.Endpoint = {
+PT.Endpoint = {
 	config: {
 		path: {
 			base:{
@@ -10,11 +10,11 @@ Neo.Endpoint = {
 		}
 	},
 	url: {
-		'SignIn': {
-			live: 'SignIn',//./api/SignIn, mock:./api/SignIn.json
+		'signIn': {
+			live: 'signIn',//./api/SignIn, mock:./api/SignIn.json
 		},
-		'SignUp': {
-			live: 'SignUp'
+		'signUp': {
+			live: 'signUp'
 		}
 	}
 };
