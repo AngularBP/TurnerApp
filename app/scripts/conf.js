@@ -14,7 +14,7 @@ PT.Endpoint = {
 			live: 'signIn',//./api/SignIn, mock:./api/SignIn.json
 		},
 		'signOut': {
-			live: 'signOut',//./api/SignIn, mock:./api/SignIn.json
+			live: 'signOut',
 		},
 		'signUp': {
 			live: 'signUp'
@@ -23,5 +23,6 @@ PT.Endpoint = {
 };
 
 PT.I18n = {
-	'signIn.fail':'Error: Invalid user or password';
+	'signIn.fail':'Error: Invalid user or password',
+	'signUp.fail':'Error: Sign up error'
 };
