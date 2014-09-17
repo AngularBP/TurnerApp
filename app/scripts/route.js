@@ -1,5 +1,5 @@
 //Config
-PT.config(function ('$stateProvider','$urlRouterProvider') {
+PTApp.config(function ('$stateProvider','$urlRouterProvider','$httpProvider') {
   $urlRouterProvider.otherwise('/signin');
   $stateProvider
     .state('signin', {
@@ -24,4 +24,5 @@ PT.config(function ('$stateProvider','$urlRouterProvider') {
       templateUrl: 'views/page.html',
       controller: 'PT.controller.Page'
     });
+  $httpProvider.interceptors.push('AuthInterceptor');
 });

@@ -1,2 +1,3 @@
 //Module PageTurner
-PT = angular.module('PT',['ui.router','PT.provider.Http']);
+PT.module.Base = angular.module('PT.module.Base',['ui.router','PT.provider.Http']);
+var PTApp = PT.module.Base;

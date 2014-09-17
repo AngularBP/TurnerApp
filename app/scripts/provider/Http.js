@@ -1,5 +1,3 @@
-
-
 PT.provider.Http = PT.define({
 	oType: 'PT.provider.Http',
 	$get:['$http',function($http){

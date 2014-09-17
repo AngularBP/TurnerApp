@@ -47,6 +47,9 @@ var PT = {
 			url = basePath + '/' + url.live;
 		}
 		return url;
+	},
+	getI18n: function(id){
+		return PT.I18n[id];
 	}
 };
 
