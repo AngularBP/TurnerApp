@@ -13,7 +13,8 @@ var PT = {
 		}
 	},
 	define: function() {
-		var newClass,o,oType,oTypes,isBase,namespaces;
+		var newClass,o,oType,oTypes,isBase,namespaces,category,modlue;
+		modlue = PTApp;
 		oTypes = this.STATIC.O_TYPE;
 		newClass = my.Class.apply(my,arguments);
 		o = arguments.length === 1 ? arguments[0] : arguments[1];
@@ -25,26 +26,28 @@ var PT = {
 		category = namespaces[1];
 		if (!isBase) {
 			if (category === oTypes.controller) {
-				PT.controller(oType, newClass);
+				modlue.controller(oType, newClass);
 			} else if (category === oTypes.provider) {
-				PT.provider(oType, newClass);
+				modlue.provider(namespaces[namespaces.length - 1], newClass);
 			}
 		}
 		return newClass;
 	},
 	getUrl: function(id,dataId) {
-		var path,basePath,url,devMode;
-		devMode = this.buildMode === this.STATIC.BUILD_MODE.dev ? true : false;
-		basePath = devMode ? this.Endpoint.config.path.base.mock : this.Endpoint.config.path.base.live;
-		url = this.Endpoint.url[id];
+		var path,basePath,url,devMode,endPoint;
+		devMode = PT.buildMode === PT.STATIC.BUILD_MODE.dev ? true : false;
+		endPoint = PT.Endpoint;
+		basePath = devMode ? endpoint.config.path.base.mock : endpoint.config.path.base.live;
+		url = endpoint.url[id];
 		if (!url) {
 			throw "Unknown url"
 		}
 		if (devMode) {
-			url = url.mock ? url.mock : url.live;
+			url = angular.isString(url) ? url : url.mock ? url.mock : url.live;
 			url = basePath + '/' + url + '.json';
 		} else {
-			url = basePath + '/' + url.live;
+			url = angular.isString(url) ? url : url.live;
+			url = basePath + '/' + url;
 		}
 		return url;
 	},
@@ -57,3 +60,4 @@ var PT = {
 PT.module = PT.module || {};
 PT.controller = PT.controller || {};
 PT.provider = PT.provider || {};
+PT.util = PT.util || {};

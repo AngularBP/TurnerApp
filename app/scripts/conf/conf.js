@@ -10,15 +10,9 @@ PT.Endpoint = {
 		}
 	},
 	url: {
-		'signIn': {
-			live: 'signIn',//./api/SignIn, mock:./api/SignIn.json
-		},
-		'signOut': {
-			live: 'signOut',
-		},
-		'signUp': {
-			live: 'signUp'
-		}
+		'signIn': 'signIn',//./api/SignIn, mock:./api/SignIn.json
+		'signOut': 'signOut',
+		'signUp': 'signUp'
 	}
 };
 
