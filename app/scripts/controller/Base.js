@@ -11,15 +11,15 @@ PT.controller.Base = PT.define({
 	STATIC: null,
 	//config object
 	$scope: null,
-	$inject: ['scope'],
+	$inject: ['$scope'],
 	//module name
 	oType: 'PT.controller.Base',
 	/**
 	 * Initialize Notes Controller
 	 * @param $scope, current controller scope
 	 */
-	constructor: function(scope) {
-		this.$scope = scope;
+	constructor: function($scope) {
+		this.$scope = $scope;
 		this.init();
 	},
 	init: function() {

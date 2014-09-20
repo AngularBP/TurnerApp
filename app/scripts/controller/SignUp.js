@@ -1,6 +1,6 @@
 //Controller SignIn
 PT.controller.SignUp = PT.define(PT.controller.Base, {
-	$inject:['$scope','PT.provider.Http','$location'],
+	$inject:['$scope','http','$location'],
 	oType:'PT.controller.SignUp',
 	STATIC: {
 		URL: {
@@ -9,14 +9,10 @@ PT.controller.SignUp = PT.define(PT.controller.Base, {
 	},
 	$http: null,
 	data: null,
-	constructor: function(scope,http) {
-		PT.controller.SignUp.Super.call(this, scope);
+	constructor: function($scope,http,$location) {
+		PT.controller.SignUp.Super.call(this, $scope);
 		this.$http = http;
-	},
-	initScope: function() {
-		var s = this.$scope;
-		s.email = 'mcchae7@gmail.com';
-		s.password = 'password';
+		this.$location = $location;
 	},
 	initScope: function() {
 		this.initUser();
@@ -70,7 +66,7 @@ PT.controller.SignUp = PT.define(PT.controller.Base, {
 	},
 	success: function(data,status,headers,config){
 		if (data.success) {
-			$location.path('/signin');
+			this.$location.path('/signin');
 		}
 	},
 	error: function(data,status,headers,config){

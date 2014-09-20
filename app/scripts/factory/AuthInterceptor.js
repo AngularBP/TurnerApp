@@ -1,5 +1,7 @@
-PTApp.factory('AuthInterceptor', function ($rootScope, $q, $window, $location) {
-  return {
+PTApp.factory('authInterceptor', function ($rootScope, $q, $window, $location) {
+  return PT.define({
+    oType: 'PT.factory.AuthInterceptor',
+    constructor: function() {},
     request: function (config) {
       config.headers = config.headers || {};
       if ($window.sessionStorage.token) {
@@ -24,5 +26,5 @@ PTApp.factory('AuthInterceptor', function ($rootScope, $q, $window, $location) {
       }
       return $q.reject(rejection);
     }
-  };
+  });
 });

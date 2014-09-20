@@ -1,7 +1,7 @@
 //Controller SignIn
 PT.controller.SignIn = PT.define(PT.controller.Base, {
 	oType:'PT.controller.SignIn',
-	inject:['$scope','PT.provider.Http','$window'],
+	inject:['$scope','http','$window'],
 	STATIC: {
 		URL: {
 			signIn: 'signIn',
@@ -14,9 +14,10 @@ PT.controller.SignIn = PT.define(PT.controller.Base, {
 	$http: null,
 	data: null,
 
-	constructor: function(scope,http) {
-		PT.controller.SignIn.Super.call(this, scope);
+	constructor: function($scope,http,$window) {
+		PT.controller.SignIn.Super.call(this, $scope);
 		this.$http = http;
+		this.$window = $window;
 	},
 	initScope: function() {
 		this.initUser();
@@ -104,7 +105,7 @@ PT.controller.SignIn = PT.define(PT.controller.Base, {
 		this.setUser();
 		this.initToken();
 		if (data.success) {
-			$window.sessionStorage.token = data.token;
+			this.$window.sessionStorage.token = data.token;
 	        this.$scope.isAuthenticated = true;
 	        this.setUser(data.token);
 		}
@@ -114,7 +115,7 @@ PT.controller.SignIn = PT.define(PT.controller.Base, {
 		this.$scope.error = PT.getI18n(this.STATIC.I18N.signInFail);
 	},
 	initToken: function(){
-		delete $window.sessionStorage.token;
+		delete this.$window.sessionStorage.token;
         this.$scope.isAuthenticated = false;
 	},
 	decodeBase64: function(str){
