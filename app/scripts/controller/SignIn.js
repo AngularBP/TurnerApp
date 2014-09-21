@@ -19,6 +19,9 @@ PT.controller.SignIn = PT.define(PT.controller.Base, {
 		this.$http = http;
 		this.$window = $window;
 	},
+	initEvents: function(){
+		this.$scope.onClickLoginBtn = this.onClickLoginBtn;
+	},
 	initScope: function() {
 		this.initUser();
 	},
@@ -56,6 +59,10 @@ PT.controller.SignIn = PT.define(PT.controller.Base, {
 				return _user.userRole;
 			}
 		};
+	},
+
+	onClickLoginBtn: function(e){
+		alert(e.target.innerHTML);
 	},
 
 	getData: function(){
