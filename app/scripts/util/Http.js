@@ -9,9 +9,9 @@ PT.util.Http = PT.define({
 	STATIC: {
 		METHOD: {
 			GET: 'GET',
-			POST: 'POST',
-			PUT: 'PUT',
-			DELETE: 'DELETE'
+			POST: PT.isDevMode ? 'GET' : 'POST',
+			PUT: PT.isDevMode ? 'GET' : 'PUT',
+			DELETE: PT.isDevMode ? 'GET' : 'DELETE'
 		}
 	},
 	/**
@@ -39,7 +39,7 @@ PT.util.Http = PT.define({
 	 */
 	post: function(config){
 		config = config || {};
-		config.method = this.STATIC.METHOD.POST;
+		config.method = PT.util.Http.METHOD.GET;
 		return this.$http(config);
 	},
 	put: function(){},

@@ -20,7 +20,10 @@ PT.controller.SignIn = PT.define(PT.controller.Base, {
 		this.$window = $window;
 	},
 	initEvents: function(){
-		this.$scope.onClickLoginBtn = this.onClickLoginBtn;
+		var me = this;
+		this.$scope.onClickLoginBtn = function(e){
+			me.onClickLoginBtn(e);
+		};
 	},
 	initScope: function() {
 		this.initUser();
@@ -62,7 +65,7 @@ PT.controller.SignIn = PT.define(PT.controller.Base, {
 	},
 
 	onClickLoginBtn: function(e){
-		alert(e.target.innerHTML);
+		this.signIn();
 	},
 
 	getData: function(){
@@ -82,16 +85,19 @@ PT.controller.SignIn = PT.define(PT.controller.Base, {
 	    this.data.user = user;
 	},
 	signIn: function() {
-		var url = PT.getUrl(this.STATIC.signIn);
-		var user = this.getUser();
-		var data = {
-			email: user.email,
-			password: user.password
+		var config = {
+			url: PT.getUrl(PT.controller.SignIn.URL.signIn),
+			data: this.getUser()
 		};
-		this.$http.post(url,password).success(this.success).error(this.error);
+		var me = this;
+		this.$http.post(config).success(function(data,status,headers,config){
+			me.success(data,status,headers,config);
+		}).error(function(){
+			me.error(data,status,headers,config);
+		});
 	},
 	signOut: function(){
-		var url = PT.getUrl(this.STATIC.signOut);
+		var url = PT.getUrl(PT.controller.SignIn.URL.signOut);
 		var user = this.getUser();
 		var data = {
 			email: user.email
@@ -115,11 +121,12 @@ PT.controller.SignIn = PT.define(PT.controller.Base, {
 			this.$window.sessionStorage.token = data.token;
 	        this.$scope.isAuthenticated = true;
 	        this.setUser(data.token);
+	        alert(angular.toJson(data));
 		}
 	},
 	error: function(data,status,headers,config){
 		this.initToken();
-		this.$scope.error = PT.getI18n(this.STATIC.I18N.signInFail);
+		this.$scope.error = PT.getI18n(PT.controller.SignIn.I18N.signInFail);
 	},
 	initToken: function(){
 		delete this.$window.sessionStorage.token;

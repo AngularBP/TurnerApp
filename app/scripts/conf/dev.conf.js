@@ -1,1 +1,1 @@
-PT.buildMode = 'dev';
+PT.isDevMode = true;

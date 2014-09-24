@@ -6,10 +6,6 @@ var PT = {
 			controller: 'controller',
 			provider: 'provider', 
 			base: 'Base', 
-		},
-		BUILD_MODE: {
-			dev:'dev',
-			prod:'prod'
 		}
 	},
 	define: function() {
@@ -39,7 +35,7 @@ var PT = {
 	},
 	getUrl: function(id,dataId) {
 		var path,basePath,url,devMode,endPoint;
-		devMode = PT.buildMode === PT.STATIC.BUILD_MODE.dev ? true : false;
+		devMode = PT.isDevMode;
 		endPoint = PT.Endpoint;
 		basePath = devMode ? endPoint.config.path.base.mock : endPoint.config.path.base.live;
 		url = endPoint.url[id];

@@ -56,7 +56,7 @@ PT.controller.SignUp = PT.define(PT.controller.Base, {
 		return data.user;
 	},
 	signUp: function() {
-		var url = PT.getUrl(this.STATIC.signIn);
+		var url = PT.getUrl(PT.controller.SignUp.URL.signIn);
 		var user = this.getUser();
 		var data = {
 			email: user.email,
@@ -70,6 +70,6 @@ PT.controller.SignUp = PT.define(PT.controller.Base, {
 		}
 	},
 	error: function(data,status,headers,config){
-		this.$scope.error = PT.getI18n(this.STATIC.I18N.signUpFail);
+		this.$scope.error = PT.getI18n(PT.controller.SignUp.I18N.signUpFail);
 	}
 });
