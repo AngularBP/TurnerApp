@@ -1,0 +1,13 @@
+{
+  "name": "my-class",
+  "homepage": "https://github.com/jiem/my-class",
+  "_release": "25e7718fe8",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "25e7718fe88833a77149d2ca250778d3539e9ef7"
+  },
+  "_source": "https://github.com/jiem/my-class.git",
+  "_target": "*",
+  "_originalSource": "https://github.com/jiem/my-class.git"
+}

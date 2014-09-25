@@ -1,7 +1,8 @@
 node_modules
-dist
+public
 .tmp
 .sass-cache
-bower_components/*/*
-!bower_components/*/bower.json
-examples
+.idea
+client/bower_components
+dist
+/server/config/local.env.js
