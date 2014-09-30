@@ -1,119 +1,111 @@
-// Generated on 2014-09-22 using generator-angular-fullstack 2.0.13
+// Generated on 2014-09-05 using generator-angular 0.9.7
 'use strict';
 
-module.exports = function (grunt) {
-  var localConfig;
-  try {
-    localConfig = require('./server/config/local.env');
-  } catch(e) {
-    localConfig = {};
-  }
+// # Globbing
+// for performance reasons we're only matching one level down:
+// 'test/spec/{,*/}*.js'
+// use this if you want to recursively match all subfolders:
+// 'test/spec/**/*.js'
 
-  // Load grunt tasks automatically, when needed
-  require('jit-grunt')(grunt, {
-    express: 'grunt-express-server',
-    useminPrepare: 'grunt-usemin',
-    ngtemplates: 'grunt-angular-templates',
-    cdnify: 'grunt-google-cdn',
-    protractor: 'grunt-protractor-runner',
-    injector: 'grunt-asset-injector',
-    buildcontrol: 'grunt-build-control'
-  });
+module.exports = function (grunt) {
+
+  // Load grunt tasks automatically
+  require('load-grunt-tasks')(grunt);
 
   // Time how long tasks take. Can help when optimizing build times
   require('time-grunt')(grunt);
+
+  // Configurable paths for the application
+  var appConfig = {
+    app: require('./bower.json').appPath || 'app',
+    dist: 'dist'
+  };
 
   // Define the configuration for all the tasks
   grunt.initConfig({
 
     // Project settings
-    pkg: grunt.file.readJSON('package.json'),
-    yeoman: {
-      // configurable paths
-      client: require('./bower.json').appPath || 'client',
-      dist: 'dist'
-    },
-    express: {
-      options: {
-        port: process.env.PORT || 9000
-      },
-      dev: {
-        options: {
-          script: 'server/app.js',
-          debug: true
-        }
-      },
-      prod: {
-        options: {
-          script: 'dist/server/app.js'
-        }
-      }
-    },
-    open: {
-      server: {
-        url: 'http://localhost:<%= express.options.port %>'
-      }
-    },
+    pt: appConfig,
+
+    // Watches files for changes and runs tasks based on the changed files
     watch: {
-      injectJS: {
-        files: [
-          '<%= yeoman.client %>/{app,components}/**/*.js',
-          '!<%= yeoman.client %>/{app,components}/**/*.spec.js',
-          '!<%= yeoman.client %>/{app,components}/**/*.mock.js',
-          '!<%= yeoman.client %>/app/app.js'],
-        tasks: ['injector:scripts']
+      bower: {
+        files: ['bower.json'],
+        tasks: ['wiredep']
       },
-      injectCss: {
-        files: [
-          '<%= yeoman.client %>/{app,components}/**/*.css'
-        ],
-        tasks: ['injector:css']
-      },
-      mochaTest: {
-        files: ['server/**/*.spec.js'],
-        tasks: ['env:test', 'mochaTest']
+      js: {
+        files: ['<%= pt.app %>/scripts/{,*/}*.js'],
+        tasks: ['newer:jshint:all'],
+        options: {
+          livereload: '<%= connect.options.livereload %>'
+        }
       },
       jsTest: {
-        files: [
-          '<%= yeoman.client %>/{app,components}/**/*.spec.js',
-          '<%= yeoman.client %>/{app,components}/**/*.mock.js'
-        ],
-        tasks: ['newer:jshint:all', 'karma']
+        files: ['test/spec/{,*/}*.js'],
+        tasks: ['newer:jshint:test', 'karma']
       },
-      injectSass: {
-        files: [
-          '<%= yeoman.client %>/{app,components}/**/*.{scss,sass}'],
-        tasks: ['injector:sass']
-      },
-      sass: {
-        files: [
-          '<%= yeoman.client %>/{app,components}/**/*.{scss,sass}'],
-        tasks: ['sass', 'autoprefixer']
+      compass: {
+        files: ['<%= pt.app %>/styles/{,*/}*.{scss,sass}'],
+        tasks: ['compass:server', 'autoprefixer']
       },
       gruntfile: {
         files: ['Gruntfile.js']
       },
       livereload: {
-        files: [
-          '{.tmp,<%= yeoman.client %>}/{app,components}/**/*.css',
-          '{.tmp,<%= yeoman.client %>}/{app,components}/**/*.html',
-          '{.tmp,<%= yeoman.client %>}/{app,components}/**/*.js',
-          '!{.tmp,<%= yeoman.client %>}{app,components}/**/*.spec.js',
-          '!{.tmp,<%= yeoman.client %>}/{app,components}/**/*.mock.js',
-          '<%= yeoman.client %>/assets/images/{,*//*}*.{png,jpg,jpeg,gif,webp,svg}'
-        ],
         options: {
-          livereload: true
+          livereload: '<%= connect.options.livereload %>'
+        },
+        files: [
+          '<%= pt.app %>/{,*/}*.html',
+          '.tmp/styles/{,*/}*.css',
+          '<%= pt.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
+        ]
+      }
+    },
+
+    // The actual grunt server settings
+    connect: {
+      options: {
+        port: 9000,
+        // Change this to '0.0.0.0' to access the server from outside.
+        hostname: 'localhost',
+        livereload: 35729
+      },
+      livereload: {
+        options: {
+          open: true,
+          middleware: function (connect) {
+            return [
+              connect.static('.tmp'),
+              connect().use(
+                '/bower_components',
+                connect.static('./bower_components')
+              ),
+              connect.static(appConfig.app)
+            ];
+          }
         }
       },
-      express: {
-        files: [
-          'server/**/*.{js,json}'
-        ],
-        tasks: ['express:dev', 'wait'],
+      test: {
         options: {
-          livereload: true,
-          nospawn: true //Without this option specified express won't be reloaded
+          port: 9001,
+          middleware: function (connect) {
+            return [
+              connect.static('.tmp'),
+              connect.static('test'),
+              connect().use(
+                '/bower_components',
+                connect.static('./bower_components')
+              ),
+              connect.static(appConfig.app)
+            ];
+          }
+        }
+      },
+      dist: {
+        options: {
+          open: true,
+          base: '<%= pt.dist %>'
         }
       }
     },
@@ -121,34 +113,20 @@ module.exports = function (grunt) {
     // Make sure code styles are up to par and there are no obvious mistakes
     jshint: {
       options: {
-        jshintrc: '<%= yeoman.client %>/.jshintrc',
+        jshintrc: '.jshintrc',
         reporter: require('jshint-stylish')
       },
-      server: {
-        options: {
-          jshintrc: 'server/.jshintrc'
-        },
+      all: {
         src: [
-          'server/**/*.js',
-          '!server/**/*.spec.js'
+          'Gruntfile.js',
+          '<%= pt.app %>/scripts/{,*/}*.js'
         ]
       },
-      serverTest: {
-        options: {
-          jshintrc: 'server/.jshintrc-spec'
-        },
-        src: ['server/**/*.spec.js']
-      },
-      all: [
-        '<%= yeoman.client %>/{app,components}/**/*.js',
-        '!<%= yeoman.client %>/{app,components}/**/*.spec.js',
-        '!<%= yeoman.client %>/{app,components}/**/*.mock.js'
-      ],
       test: {
-        src: [
-          '<%= yeoman.client %>/{app,components}/**/*.spec.js',
-          '<%= yeoman.client %>/{app,components}/**/*.mock.js'
-        ]
+        options: {
+          jshintrc: 'test/.jshintrc'
+        },
+        src: ['test/spec/{,*/}*.js']
       }
     },
 
@@ -159,10 +137,8 @@ module.exports = function (grunt) {
           dot: true,
           src: [
             '.tmp',
-            '<%= yeoman.dist %>/*',
-            '!<%= yeoman.dist %>/.git*',
-            '!<%= yeoman.dist %>/.openshift',
-            '!<%= yeoman.dist %>/Procfile'
+            '<%= pt.dist %>/{,*/}*',
+            '!<%= pt.dist %>/.git*'
           ]
         }]
       },
@@ -177,67 +153,66 @@ module.exports = function (grunt) {
       dist: {
         files: [{
           expand: true,
-          cwd: '.tmp/',
+          cwd: '.tmp/styles/',
           src: '{,*/}*.css',
-          dest: '.tmp/'
+          dest: '.tmp/styles/'
         }]
-      }
-    },
-
-    // Debugging with node inspector
-    'node-inspector': {
-      custom: {
-        options: {
-          'web-host': 'localhost'
-        }
-      }
-    },
-
-    // Use nodemon to run server in debug mode with an initial breakpoint
-    nodemon: {
-      debug: {
-        script: 'server/app.js',
-        options: {
-          nodeArgs: ['--debug-brk'],
-          env: {
-            PORT: process.env.PORT || 9000
-          },
-          callback: function (nodemon) {
-            nodemon.on('log', function (event) {
-              console.log(event.colour);
-            });
-
-            // opens browser on initial server start
-            nodemon.on('config:update', function () {
-              setTimeout(function () {
-                require('open')('http://localhost:8080/debug?port=5858');
-              }, 500);
-            });
-          }
-        }
       }
     },
 
     // Automatically inject Bower components into the app
     wiredep: {
-      target: {
-        src: '<%= yeoman.client %>/index.html',
-        ignorePath: '<%= yeoman.client %>/',
-        exclude: [/bootstrap-sass-official/, /bootstrap.js/, '/json3/', '/es5-shim/', /bootstrap.css/, /font-awesome.css/ ]
+      options: {
+        cwd: '<%= pt.app %>'
+      },
+      app: {
+        src: ['<%= pt.app %>/index.html'],
+        ignorePath:  /\.\.\//
+      },
+      sass: {
+        src: ['<%= pt.app %>/styles/{,*/}*.{scss,sass}'],
+        ignorePath: /(\.\.\/){1,2}bower_components\//
+      }
+    },
+
+    // Compiles Sass to CSS and generates necessary files if requested
+    compass: {
+      options: {
+        sassDir: '<%= pt.app %>/styles',
+        cssDir: '.tmp/styles',
+        generatedImagesDir: '.tmp/images/generated',
+        imagesDir: '<%= pt.app %>/images',
+        javascriptsDir: '<%= pt.app %>/scripts',
+        fontsDir: '<%= pt.app %>/styles/fonts',
+        importPath: './bower_components',
+        httpImagesPath: '/images',
+        httpGeneratedImagesPath: '/images/generated',
+        httpFontsPath: '/styles/fonts',
+        relativeAssets: false,
+        assetCacheBuster: false,
+        raw: 'Sass::Script::Number.precision = 10\n'
+      },
+      dist: {
+        options: {
+          generatedImagesDir: '<%= pt.dist %>/images/generated'
+        }
+      },
+      server: {
+        options: {
+          debugInfo: true
+        }
       }
     },
 
     // Renames files for browser caching purposes
-    rev: {
+    filerev: {
       dist: {
-        files: {
-          src: [
-            '<%= yeoman.dist %>/public/{,*/}*.js',
-            '<%= yeoman.dist %>/public/{,*/}*.css',
-            '<%= yeoman.dist %>/public/assets/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
-            '<%= yeoman.dist %>/public/assets/fonts/*'
-          ]
-        }
+        src: [
+          '<%= pt.dist %>/scripts/{,*/}*.js',
+          '<%= pt.dist %>/styles/{,*/}*.css',
+          '<%= pt.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
+          '<%= pt.dist %>/styles/fonts/*'
+        ]
       }
     },
 
@@ -245,39 +220,63 @@ module.exports = function (grunt) {
     // concat, minify and revision files. Creates configurations in memory so
     // additional tasks can operate on them
     useminPrepare: {
-      html: ['<%= yeoman.client %>/index.html'],
+      html: '<%= pt.app %>/index.html',
       options: {
-        dest: '<%= yeoman.dist %>/public'
-      }
-    },
-
-    // Performs rewrites based on rev and the useminPrepare configuration
-    usemin: {
-      html: ['<%= yeoman.dist %>/public/{,*/}*.html'],
-      css: ['<%= yeoman.dist %>/public/{,*/}*.css'],
-      js: ['<%= yeoman.dist %>/public/{,*/}*.js'],
-      options: {
-        assetsDirs: [
-          '<%= yeoman.dist %>/public',
-          '<%= yeoman.dist %>/public/assets/images'
-        ],
-        // This is so we update image references in our ng-templates
-        patterns: {
-          js: [
-            [/(assets\/images\/.*?\.(?:gif|jpeg|jpg|png|webp|svg))/gm, 'Update the JS to reference our revved images']
-          ]
+        dest: '<%= pt.dist %>',
+        flow: {
+          html: {
+            steps: {
+              js: ['concat', 'uglifyjs'],
+              css: ['cssmin']
+            },
+            post: {}
+          }
         }
       }
     },
 
-    // The following *-min tasks produce minified files in the dist folder
+    // Performs rewrites based on filerev and the useminPrepare configuration
+    usemin: {
+      html: ['<%= pt.dist %>/{,*/}*.html'],
+      css: ['<%= pt.dist %>/styles/{,*/}*.css'],
+      options: {
+        assetsDirs: ['<%= pt.dist %>','<%= pt.dist %>/images']
+      }
+    },
+
+    // The following *-min tasks will produce minified files in the dist folder
+    // By default, your `index.html`'s <!-- Usemin block --> will take care of
+    // minification. These next options are pre-configured if you do not wish
+    // to use the Usemin blocks.
+    // cssmin: {
+    //   dist: {
+    //     files: {
+    //       '<%= pt.dist %>/styles/main.css': [
+    //         '.tmp/styles/{,*/}*.css'
+    //       ]
+    //     }
+    //   }
+    // },
+    // uglify: {
+    //   dist: {
+    //     files: {
+    //       '<%= pt.dist %>/scripts/scripts.js': [
+    //         '<%= pt.dist %>/scripts/scripts.js'
+    //       ]
+    //     }
+    //   }
+    // },
+    // concat: {
+    //   dist: {}
+    // },
+
     imagemin: {
       dist: {
         files: [{
           expand: true,
-          cwd: '<%= yeoman.client %>/assets/images',
+          cwd: '<%= pt.app %>/images',
           src: '{,*/}*.{png,jpg,jpeg,gif}',
-          dest: '<%= yeoman.dist %>/public/assets/images'
+          dest: '<%= pt.dist %>/images'
         }]
       }
     },
@@ -286,58 +285,48 @@ module.exports = function (grunt) {
       dist: {
         files: [{
           expand: true,
-          cwd: '<%= yeoman.client %>/assets/images',
+          cwd: '<%= pt.app %>/images',
           src: '{,*/}*.svg',
-          dest: '<%= yeoman.dist %>/public/assets/images'
+          dest: '<%= pt.dist %>/images'
         }]
       }
     },
 
-    // Allow the use of non-minsafe AngularJS files. Automatically makes it
-    // minsafe compatible so Uglify does not destroy the ng references
+    htmlmin: {
+      dist: {
+        options: {
+          collapseWhitespace: true,
+          conservativeCollapse: true,
+          collapseBooleanAttributes: true,
+          removeCommentsFromCDATA: true,
+          removeOptionalTags: true
+        },
+        files: [{
+          expand: true,
+          cwd: '<%= pt.dist %>',
+          src: ['*.html', 'views/{,*/}*.html'],
+          dest: '<%= pt.dist %>'
+        }]
+      }
+    },
+
+    // ng-annotate tries to make the code safe for minification automatically
+    // by using the Angular long form for dependency injection.
     ngAnnotate: {
       dist: {
         files: [{
           expand: true,
-          cwd: '.tmp/concat',
-          src: '*/**.js',
-          dest: '.tmp/concat'
+          cwd: '.tmp/concat/scripts',
+          src: ['*.js', '!oldieshim.js'],
+          dest: '.tmp/concat/scripts'
         }]
-      }
-    },
-
-    // Package all the html partials into a single javascript payload
-    ngtemplates: {
-      options: {
-        // This should be the name of your apps angular module
-        module: 'turnerAppApp',
-        htmlmin: {
-          collapseBooleanAttributes: true,
-          collapseWhitespace: true,
-          removeAttributeQuotes: true,
-          removeEmptyAttributes: true,
-          removeRedundantAttributes: true,
-          removeScriptTypeAttributes: true,
-          removeStyleLinkTypeAttributes: true
-        },
-        usemin: 'app/app.js'
-      },
-      main: {
-        cwd: '<%= yeoman.client %>',
-        src: ['{app,components}/**/*.html'],
-        dest: '.tmp/templates.js'
-      },
-      tmp: {
-        cwd: '.tmp',
-        src: ['{app,components}/**/*.html'],
-        dest: '.tmp/tmp-templates.js'
       }
     },
 
     // Replace Google CDN references
     cdnify: {
       dist: {
-        html: ['<%= yeoman.dist %>/public/*.html']
+        html: ['<%= pt.dist %>/*.html']
       }
     },
 
@@ -347,79 +336,46 @@ module.exports = function (grunt) {
         files: [{
           expand: true,
           dot: true,
-          cwd: '<%= yeoman.client %>',
-          dest: '<%= yeoman.dist %>/public',
+          cwd: '<%= pt.app %>',
+          dest: '<%= pt.dist %>',
           src: [
             '*.{ico,png,txt}',
             '.htaccess',
-            'bower_components/**/*',
-            'assets/images/{,*/}*.{webp}',
-            'assets/fonts/**/*',
-            'index.html'
+            '*.html',
+            'views/{,*/}*.html',
+            'images/{,*/}*.{webp}',
+            'fonts/*'
           ]
         }, {
           expand: true,
           cwd: '.tmp/images',
-          dest: '<%= yeoman.dist %>/public/assets/images',
+          dest: '<%= pt.dist %>/images',
           src: ['generated/*']
         }, {
           expand: true,
-          dest: '<%= yeoman.dist %>',
-          src: [
-            'package.json',
-            'server/**/*'
-          ]
+          cwd: '.',
+          src: 'bower_components/bootstrap-sass-official/assets/fonts/bootstrap/*',
+          dest: '<%= pt.dist %>'
         }]
       },
       styles: {
         expand: true,
-        cwd: '<%= yeoman.client %>',
-        dest: '.tmp/',
-        src: ['{app,components}/**/*.css']
-      }
-    },
-
-    buildcontrol: {
-      options: {
-        dir: 'dist',
-        commit: true,
-        push: true,
-        connectCommits: false,
-        message: 'Built %sourceName% from commit %sourceCommit% on branch %sourceBranch%'
-      },
-      heroku: {
-        options: {
-          remote: 'heroku',
-          branch: 'master'
-        }
-      },
-      openshift: {
-        options: {
-          remote: 'openshift',
-          branch: 'master'
-        }
+        cwd: '<%= pt.app %>/styles',
+        dest: '.tmp/styles/',
+        src: '{,*/}*.css'
       }
     },
 
     // Run some tasks in parallel to speed up the build process
     concurrent: {
       server: [
-        'sass',
+        'compass:server'
       ],
       test: [
-        'sass',
+        'compass'
       ],
-      debug: {
-        tasks: [
-          'nodemon',
-          'node-inspector'
-        ],
-        options: {
-          logConcurrentOutput: true
-        }
-      },
       dist: [
-        'sass',
+        'compass:dist',
         'imagemin',
         'svgmin'
       ]
@@ -428,235 +384,85 @@ module.exports = function (grunt) {
     // Test settings
     karma: {
       unit: {
-        configFile: 'karma.conf.js',
+        configFile: 'test/karma.conf.js',
         singleRun: true
       }
     },
-
-    mochaTest: {
-      options: {
-        reporter: 'spec'
-      },
-      src: ['server/**/*.spec.js']
-    },
-
-    protractor: {
-      options: {
-        configFile: 'protractor.conf.js'
-      },
-      chrome: {
-        options: {
-          args: {
-            browser: 'chrome'
-          }
-        }
-      }
-    },
-
-    env: {
-      test: {
-        NODE_ENV: 'test'
-      },
-      prod: {
-        NODE_ENV: 'production'
-      },
-      all: localConfig
-    },
-
-    // Compiles Sass to CSS
-    sass: {
-      server: {
-        options: {
-          loadPath: [
-            '<%= yeoman.client %>/bower_components',
-            '<%= yeoman.client %>/app',
-            '<%= yeoman.client %>/components'
-          ],
-          compass: false
-        },
+    'string-replace': {
+      dist:{
         files: {
-          '.tmp/app/app.css' : '<%= yeoman.client %>/app/app.scss'
-        }
-      }
-    },
-
-    injector: {
-      options: {
-
-      },
-      // Inject application script files into index.html (doesn't include bower)
-      scripts: {
-        options: {
-          transform: function(filePath) {
-            filePath = filePath.replace('/client/', '');
-            filePath = filePath.replace('/.tmp/', '');
-            return '<script src="' + filePath + '"></script>';
-          },
-          starttag: '<!-- injector:js -->',
-          endtag: '<!-- endinjector -->'
+          '<%= pt.app %>/index.html': '<%= pt.app %>/index.html'
         },
-        files: {
-          '<%= yeoman.client %>/index.html': [
-              ['{.tmp,<%= yeoman.client %>}/{app,components}/**/*.js',
-               '!{.tmp,<%= yeoman.client %>}/app/app.js',
-               '!{.tmp,<%= yeoman.client %>}/{app,components}/**/*.spec.js',
-               '!{.tmp,<%= yeoman.client %>}/{app,components}/**/*.mock.js']
-            ]
-        }
-      },
-
-      // Inject component scss into app.scss
-      sass: {
         options: {
-          transform: function(filePath) {
-            filePath = filePath.replace('/client/app/', '');
-            filePath = filePath.replace('/client/components/', '');
-            return '@import \'' + filePath + '\';';
-          },
-          starttag: '// injector',
-          endtag: '// endinjector'
-        },
-        files: {
-          '<%= yeoman.client %>/app/app.scss': [
-            '<%= yeoman.client %>/{app,components}/**/*.{scss,sass}',
-            '!<%= yeoman.client %>/app/app.{scss,sass}'
+          replacements: [
+            {
+              pattern: 'scripts/dev.conf.js',
+              replacement: 'scripts/prod.conf.js'
+            }
           ]
         }
       },
-
-      // Inject component css into index.html
-      css: {
-        options: {
-          transform: function(filePath) {
-            filePath = filePath.replace('/client/', '');
-            filePath = filePath.replace('/.tmp/', '');
-            return '<link rel="stylesheet" href="' + filePath + '">';
-          },
-          starttag: '<!-- injector:css -->',
-          endtag: '<!-- endinjector -->'
-        },
+      dev:{
         files: {
-          '<%= yeoman.client %>/index.html': [
-            '<%= yeoman.client %>/{app,components}/**/*.css'
+          '<%= pt.app %>/index.html': '<%= pt.app %>/index.html'
+        },
+        options: {
+          replacements: [
+            {
+              pattern: 'scripts/prod.conf.js',
+              replacement: 'scripts/dev.conf.js'
+            }
           ]
         }
       }
-    },
-  });
-
-  // Used for delaying livereload until after server has restarted
-  grunt.registerTask('wait', function () {
-    grunt.log.ok('Waiting for server reload...');
-
-    var done = this.async();
-
-    setTimeout(function () {
-      grunt.log.writeln('Done waiting!');
-      done();
-    }, 1500);
-  });
-
-  grunt.registerTask('express-keepalive', 'Keep grunt running', function() {
-    this.async();
-  });
-
-  grunt.registerTask('serve', function (target) {
-    if (target === 'dist') {
-      return grunt.task.run(['build', 'env:all', 'env:prod', 'express:prod', 'wait', 'open', 'express-keepalive']);
     }
+  });
 
-    if (target === 'debug') {
-      return grunt.task.run([
-        'clean:server',
-        'env:all',
-        'injector:sass', 
-        'concurrent:server',
-        'injector',
-        'wiredep',
-        'autoprefixer',
-        'concurrent:debug'
-      ]);
+  grunt.registerTask('serve', 'Compile then start a connect web server', function (target) {
+    if (target === 'dist') {
+      return grunt.task.run(['build', 'connect:dist:keepalive']);
     }
 
     grunt.task.run([
+      'string-replace:dev',
       'clean:server',
-      'env:all',
-      'injector:sass', 
-      'concurrent:server',
-      'injector',
       'wiredep',
+      'concurrent:server',
       'autoprefixer',
-      'express:dev',
-      'wait',
-      'open',
+      'connect:livereload',
       'watch'
     ]);
   });
 
-  grunt.registerTask('server', function () {
+  grunt.registerTask('server', 'DEPRECATED TASK. Use the "serve" task instead', function (target) {
     grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
-    grunt.task.run(['serve']);
+    grunt.task.run(['serve:' + target]);
   });
 
-  grunt.registerTask('test', function(target) {
-    if (target === 'server') {
-      return grunt.task.run([
-        'env:all',
-        'env:test',
-        'mochaTest'
-      ]);
-    }
-
-    else if (target === 'client') {
-      return grunt.task.run([
-        'clean:server',
-        'env:all',
-        'injector:sass', 
-        'concurrent:test',
-        'injector',
-        'autoprefixer',
-        'karma'
-      ]);
-    }
-
-    else if (target === 'e2e') {
-      return grunt.task.run([
-        'clean:server',
-        'env:all',
-        'env:test',
-        'injector:sass', 
-        'concurrent:test',
-        'injector',
-        'wiredep',
-        'autoprefixer',
-        'express:dev',
-        'protractor'
-      ]);
-    }
-
-    else grunt.task.run([
-      'test:server',
-      'test:client'
-    ]);
-  });
+  grunt.registerTask('test', [
+    'clean:server',
+    'concurrent:test',
+    'autoprefixer',
+    'connect:test',
+    'karma'
+  ]);
 
   grunt.registerTask('build', [
+    'string-replace:dist',
     'clean:dist',
-    'injector:sass', 
-    'concurrent:dist',
-    'injector',
     'wiredep',
     'useminPrepare',
+    'concurrent:dist',
     'autoprefixer',
-    'ngtemplates',
     'concat',
     'ngAnnotate',
     'copy:dist',
     'cdnify',
     'cssmin',
     'uglify',
-    'rev',
-    'usemin'
+    'filerev',
+    'usemin',
+    'htmlmin'
   ]);
 
   grunt.registerTask('default', [
