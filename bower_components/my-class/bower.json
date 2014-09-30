@@ -1,0 +1,7 @@
+{
+  "name": "my-class",
+  "version": "1.0",
+  "main": "./my.class.js",
+  "dependencies": {
+  }
+}
