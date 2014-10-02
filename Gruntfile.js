@@ -9,6 +9,13 @@
 
 module.exports = function (grunt) {
 
+  var localConfig;
+  try {
+    localConfig = require('./server/config/local.env');
+  } catch(e) {
+    localConfig = {};
+  }
+
   // Load grunt tasks automatically
   require('load-grunt-tasks')(grunt);
 
@@ -27,6 +34,27 @@ module.exports = function (grunt) {
     // Project settings
     pt: appConfig,
 
+    express: {
+      options: {
+        port: process.env.PORT || 9000
+      },
+      dev: {
+        options: {
+          script: 'server/app.js',
+          debug: true
+        }
+      },
+      prod: {
+        options: {
+          script: 'dist/server/app.js'
+        }
+      }
+    },
+    open: {
+      server: {
+        url: 'http://localhost:<%= express.options.port %>'
+      }
+    },
     // Watches files for changes and runs tasks based on the changed files
     watch: {
       bower: {
@@ -60,61 +88,80 @@ module.exports = function (grunt) {
           '.tmp/styles/{,*/}*.css',
           '<%= pt.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
         ]
-      }
-    },
-
-    // The actual grunt server settings
-    connect: {
-      options: {
-        port: 9000,
-        // Change this to '0.0.0.0' to access the server from outside.
-        hostname: 'localhost',
-        livereload: 35729
       },
-      livereload: {
+      express: {
+        files: [
+          'server/**/*.{js,json}'
+        ],
+        tasks: ['express:dev', 'wait'],
         options: {
-          open: true,
-          middleware: function (connect) {
-            return [
-              connect.static('.tmp'),
-              connect().use(
-                '/bower_components',
-                connect.static('./bower_components')
-              ),
-              connect.static(appConfig.app)
-            ];
-          }
-        }
-      },
-      test: {
-        options: {
-          port: 9001,
-          middleware: function (connect) {
-            return [
-              connect.static('.tmp'),
-              connect.static('test'),
-              connect().use(
-                '/bower_components',
-                connect.static('./bower_components')
-              ),
-              connect.static(appConfig.app)
-            ];
-          }
-        }
-      },
-      dist: {
-        options: {
-          open: true,
-          base: '<%= pt.dist %>'
+          livereload: true,
+          nospawn: true //Without this option specified express won't be reloaded
         }
       }
     },
+    //disabled for express
+    // // The actual grunt server settings
+    // connect: {
+    //   options: {
+    //     port: 9000,
+    //     // Change this to '0.0.0.0' to access the server from outside.
+    //     hostname: 'localhost',
+    //     livereload: 35729
+    //   },
+    //   livereload: {
+    //     options: {
+    //       open: true,
+    //       middleware: function (connect) {
+    //         return [
+    //           connect.static('.tmp'),
+    //           connect().use(
+    //             '/bower_components',
+    //             connect.static('./bower_components')
+    //           ),
+    //           connect.static(appConfig.app)
+    //         ];
+    //       }
+    //     }
+    //   },
+    //   test: {
+    //     options: {
+    //       port: 9001,
+    //       middleware: function (connect) {
+    //         return [
+    //           connect.static('.tmp'),
+    //           connect.static('test'),
+    //           connect().use(
+    //             '/bower_components',
+    //             connect.static('./bower_components')
+    //           ),
+    //           connect.static(appConfig.app)
+    //         ];
+    //       }
+    //     }
+    //   },
+    //   dist: {
+    //     options: {
+    //       open: true,
+    //       base: '<%= pt.dist %>'
+    //     }
+    //   }
+    // },
 
     // Make sure code styles are up to par and there are no obvious mistakes
     jshint: {
       options: {
         jshintrc: '.jshintrc',
         reporter: require('jshint-stylish')
+      },
+      server: {
+        options: {
+          jshintrc: 'server/.jshintrc'
+        },
+        src: [
+          'server/**/*.js',
+          '!server/**/*.spec.js'
+        ]
       },
       all: {
         src: [
@@ -138,7 +185,9 @@ module.exports = function (grunt) {
           src: [
             '.tmp',
             '<%= pt.dist %>/{,*/}*',
-            '!<%= pt.dist %>/.git*'
+            '!<%= pt.dist %>/.git*',
+            '!<%= pt.dist %>/.openshift',
+            '!<%= pt.dist %>/Procfile'
           ]
         }]
       },
@@ -157,6 +206,40 @@ module.exports = function (grunt) {
           src: '{,*/}*.css',
           dest: '.tmp/styles/'
         }]
+      }
+    },
+
+    // Debugging with node inspector
+    'node-inspector': {
+      custom: {
+        options: {
+          'web-host': 'localhost'
+        }
+      }
+    },
+
+    // Use nodemon to run server in debug mode with an initial breakpoint
+    nodemon: {
+      debug: {
+        script: 'server/app.js',
+        options: {
+          nodeArgs: ['--debug-brk'],
+          env: {
+            PORT: process.env.PORT || 9000
+          },
+          callback: function (nodemon) {
+            nodemon.on('log', function (event) {
+              console.log(event.colour);
+            });
+
+            // opens browser on initial server start
+            nodemon.on('config:update', function () {
+              setTimeout(function () {
+                require('open')('http://localhost:8080/debug?port=5858');
+              }, 500);
+            });
+          }
+        }
       }
     },
 
@@ -351,11 +434,6 @@ module.exports = function (grunt) {
           cwd: '.tmp/images',
           dest: '<%= pt.dist %>/images',
           src: ['generated/*']
-        }, {
-          expand: true,
-          cwd: '.',
-          src: 'bower_components/bootstrap-sass-official/assets/fonts/bootstrap/*',
-          dest: '<%= pt.dist %>'
         }]
       },
       styles: {
@@ -365,6 +443,28 @@ module.exports = function (grunt) {
         src: '{,*/}*.css'
       }
     },
+
+    // buildcontrol: {
+    //   options: {
+    //     dir: 'dist',
+    //     commit: true,
+    //     push: true,
+    //     connectCommits: false,
+    //     message: 'Built %sourceName% from commit %sourceCommit% on branch %sourceBranch%'
+    //   },
+    //   heroku: {
+    //     options: {
+    //       remote: 'heroku',
+    //       branch: 'master'
+    //     }
+    //   },
+    //   openshift: {
+    //     options: {
+    //       remote: 'openshift',
+    //       branch: 'master'
+    //     }
+    //   }
+    // },
 
     // Run some tasks in parallel to speed up the build process
     concurrent: {
@@ -415,21 +515,61 @@ module.exports = function (grunt) {
           ]
         }
       }
+    },
+    env: {
+      test: {
+        NODE_ENV: 'test'
+      },
+      prod: {
+        NODE_ENV: 'production'
+      },
+      all: localConfig
     }
+  });
+
+  // Used for delaying livereload until after server has restarted
+  grunt.registerTask('wait', function () {
+    grunt.log.ok('Waiting for server reload...');
+
+    var done = this.async();
+
+    setTimeout(function () {
+      grunt.log.writeln('Done waiting!');
+      done();
+    }, 1500);
+  });
+
+  grunt.registerTask('express-keepalive', 'Keep grunt running', function() {
+    this.async();
   });
 
   grunt.registerTask('serve', 'Compile then start a connect web server', function (target) {
     if (target === 'dist') {
-      return grunt.task.run(['build', 'connect:dist:keepalive']);
+      return grunt.task.run(['build', 'env:all', 'env:prod', 'express:prod', 'wait', 'open', 'express-keepalive']);
+    }
+
+    if (target === 'debug') {
+      return grunt.task.run([
+        'string-replace:dev',
+        'clean:server',
+        'env:all',
+        'concurrent:server',
+        'wiredep',
+        'autoprefixer',
+        'concurrent:debug'
+      ]);
     }
 
     grunt.task.run([
       'string-replace:dev',
       'clean:server',
-      'wiredep',
+      'env:all',
       'concurrent:server',
+      'wiredep',
       'autoprefixer',
-      'connect:livereload',
+      'express:dev',
+      'wait',
+      'open',
       'watch'
     ]);
   });
@@ -440,6 +580,7 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('test', [
+    'env:all',
     'clean:server',
     'concurrent:test',
     'autoprefixer',

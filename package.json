@@ -1,7 +1,14 @@
 {
   "name": "turnerapp",
   "version": "0.0.0",
-  "dependencies": {},
+  "main": "server/app.js",
+  "dependencies": {
+    "body-parser": "~1.9.0",
+    "express": "~4.9.5",
+    "express-jwt": "~0.3.2",
+    "jsonwebtoken": "~1.1.2",
+    "mongoose": "~3.8.17"
+  },
   "devDependencies": {
     "grunt": "^0.4.1",
     "grunt-autoprefixer": "^0.7.3",
@@ -33,12 +40,18 @@
     "karma-jasmine": "~0.1.5",
     "grunt-dev-prod-switch": "~0.1.5",
     "grunt-targethtml": "~0.2.6",
-    "grunt-string-replace": "~0.2.7"
+    "grunt-string-replace": "~0.2.7",
+    "grunt-node-inspector": "~0.1.5",
+    "grunt-nodemon": "~0.3.0",
+    "grunt-env": "~0.4.1",
+    "grunt-express": "~1.4.1",
+    "grunt-open": "~0.2.3"
   },
   "engines": {
     "node": ">=0.10.0"
   },
   "scripts": {
+    "start": "node server/app.js",
     "test": "grunt test"
   }
 }

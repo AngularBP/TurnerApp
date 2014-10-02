@@ -16,7 +16,4 @@ PT.Endpoint = {
 	}
 };
 
-PT.I18n = {
-	'signIn.fail':'Error: Invalid user or password',
-	'signUp.fail':'Error: Sign up error'
-};
+PT.i18n = {};

@@ -31,7 +31,11 @@ PT.util.Http = PT.define({
 	 * RESTful get
 	 * @return {[type]}
 	 */
-	get: function(){},
+	get: function(config){
+		config = config || {};
+		config.method = PT.util.Http.METHOD.GET;
+		return this.$http(config);
+	},
 	/**
 	 * RESTful post
 	 * @param  {[type]} config
@@ -39,7 +43,7 @@ PT.util.Http = PT.define({
 	 */
 	post: function(config){
 		config = config || {};
-		config.method = PT.util.Http.METHOD.GET;
+		config.method = PT.util.Http.METHOD.POST;
 		return this.$http(config);
 	},
 	put: function(){},

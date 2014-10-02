@@ -90,7 +90,7 @@ PT.controller.SignIn = PT.define(PT.controller.Base, {
 			data: this.getUser()
 		};
 		var me = this;
-		this.$http.post(config).success(function(data,status,headers,config){
+		this.$http.get(config).success(function(data,status,headers,config){
 			me.success(data,status,headers,config);
 		}).error(function(){
 			me.error(data,status,headers,config);
@@ -103,7 +103,7 @@ PT.controller.SignIn = PT.define(PT.controller.Base, {
 			email: user.email
 		};
 
-		this.$http.post(url,password)
+		this.$http.get(url,password)
 			.success(function(data,status,headers,config){
 
 			})
