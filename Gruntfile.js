@@ -46,7 +46,8 @@ module.exports = function (grunt) {
       },
       prod: {
         options: {
-          script: 'dist/server/app.js'
+          script: 'dist/server/app.js',
+          node_env: 'production'
         }
       }
     },
@@ -63,10 +64,7 @@ module.exports = function (grunt) {
       },
       js: {
         files: ['<%= pt.app %>/scripts/{,*/}*.js'],
-        tasks: ['newer:jshint:all'],
-        options: {
-          livereload: '<%= connect.options.livereload %>'
-        }
+        tasks: ['newer:jshint:all']
       },
       jsTest: {
         files: ['test/spec/{,*/}*.js'],
@@ -80,14 +78,14 @@ module.exports = function (grunt) {
         files: ['Gruntfile.js']
       },
       livereload: {
-        options: {
-          livereload: '<%= connect.options.livereload %>'
-        },
         files: [
           '<%= pt.app %>/{,*/}*.html',
           '.tmp/styles/{,*/}*.css',
           '<%= pt.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
-        ]
+        ],
+        options: {
+          livereload: true
+        }
       },
       express: {
         files: [
@@ -95,8 +93,7 @@ module.exports = function (grunt) {
         ],
         tasks: ['express:dev', 'wait'],
         options: {
-          livereload: true,
-          nospawn: true //Without this option specified express won't be reloaded
+          spawn: false //Without this option specified express won't be reloaded
         }
       }
     },
@@ -584,7 +581,7 @@ module.exports = function (grunt) {
     'clean:server',
     'concurrent:test',
     'autoprefixer',
-    'connect:test',
+    //'connect:test',
     'karma'
   ]);
 
