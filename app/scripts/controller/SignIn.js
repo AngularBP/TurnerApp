@@ -19,6 +19,9 @@ PT.controller.SignIn = PT.define(PT.controller.Base, {
 		this.$http = http;
 		this.$window = $window;
 	},
+	initConst: function(){
+		//this.CONST = 
+	},
 	initEvents: function(){
 		var me = this;
 		this.$scope.onClickLoginBtn = function(e){
@@ -90,7 +93,7 @@ PT.controller.SignIn = PT.define(PT.controller.Base, {
 			data: this.getUser()
 		};
 		var me = this;
-		this.$http.get(config).success(function(data,status,headers,config){
+		this.$http.post(config).success(function(data,status,headers,config){
 			me.success(data,status,headers,config);
 		}).error(function(){
 			me.error(data,status,headers,config);

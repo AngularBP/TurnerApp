@@ -5,7 +5,7 @@ PT.Endpoint = {
 		path: {
 			base:{
 				mock: './mock',
-				live: './api'
+				live: ''
 			}
 		}
 	},
