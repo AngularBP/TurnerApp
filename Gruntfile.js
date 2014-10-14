@@ -33,7 +33,7 @@ module.exports = function (grunt) {
 
     // Project settings
     pt: appConfig,
-
+    //******************Node & Express Start*******************
     express: {
       options: {
         port: process.env.PORT || 9000
@@ -56,47 +56,51 @@ module.exports = function (grunt) {
         url: 'http://localhost:<%= express.options.port %>'
       }
     },
-    // Watches files for changes and runs tasks based on the changed files
-    watch: {
-      bower: {
-        files: ['bower.json'],
-        tasks: ['wiredep']
-      },
-      js: {
-        files: ['<%= pt.app %>/scripts/{,*/}*.js'],
-        tasks: ['newer:jshint:all']
-      },
-      jsTest: {
-        files: ['test/spec/{,*/}*.js'],
-        tasks: ['newer:jshint:test', 'karma']
-      },
-      compass: {
-        files: ['<%= pt.app %>/styles/{,*/}*.{scss,sass}'],
-        tasks: ['compass:server', 'autoprefixer']
-      },
-      gruntfile: {
-        files: ['Gruntfile.js']
-      },
-      livereload: {
-        files: [
-          '<%= pt.app %>/{,*/}*.html',
-          '.tmp/styles/{,*/}*.css',
-          '<%= pt.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
-        ],
+
+    // Debugging with node inspector
+    'node-inspector': {
+      custom: {
         options: {
-          livereload: true
-        }
-      },
-      express: {
-        files: [
-          'server/**/*.{js,json}'
-        ],
-        tasks: ['express:dev', 'wait'],
-        options: {
-          spawn: false //Without this option specified express won't be reloaded
+          'web-host': 'localhost'
         }
       }
     },
+
+    // Use nodemon to run server in debug mode with an initial breakpoint
+    nodemon: {
+      debug: {
+        script: 'server/app.js',
+        options: {
+          nodeArgs: ['--debug-brk'],
+          env: {
+            PORT: process.env.PORT || 9000
+          },
+          callback: function (nodemon) {
+            nodemon.on('log', function (event) {
+              console.log(event.colour);
+            });
+
+            // opens browser on initial server start
+            nodemon.on('config:update', function () {
+              setTimeout(function () {
+                require('open')('http://localhost:8080/debug?port=5858');
+              }, 500);
+            });
+          }
+        }
+      }
+    },
+
+    env: {
+      test: {
+        NODE_ENV: 'test'
+      },
+      prod: {
+        NODE_ENV: 'production'
+      },
+      all: localConfig
+    },
+
     //disabled for express
     // // The actual grunt server settings
     // connect: {
@@ -145,6 +149,49 @@ module.exports = function (grunt) {
     //   }
     // },
 
+    //******************Node & Express End*******************
+    // Watches files for changes and runs tasks based on the changed files
+    watch: {
+      bower: {
+        files: ['bower.json'],
+        tasks: ['wiredep']
+      },
+      js: {
+        files: ['<%= pt.app %>/scripts/{,*/}*.js'],
+        tasks: ['newer:jshint:all']
+      },
+      jsTest: {
+        files: ['test/spec/{,*/}*.js'],
+        tasks: ['newer:jshint:test', 'karma']
+      },
+      compass: {
+        files: ['<%= pt.app %>/styles/{,*/}*.{scss,sass}'],
+        tasks: ['compass:server', 'autoprefixer']
+      },
+      gruntfile: {
+        files: ['Gruntfile.js']
+      },
+      livereload: {
+        files: [
+          '<%= pt.app %>/{,*/}*.html',
+          '.tmp/styles/{,*/}*.css',
+          '<%= pt.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
+        ],
+        options: {
+          livereload: true
+        }
+      },
+      express: {
+        files: [
+          'server/**/*.{js,json}'
+        ],
+        tasks: ['express:dev', 'wait'],
+        options: {
+          spawn: false //Without this option specified express won't be reloaded
+        }
+      }
+    },
+    
     // Make sure code styles are up to par and there are no obvious mistakes
     jshint: {
       options: {
@@ -203,40 +250,6 @@ module.exports = function (grunt) {
           src: '{,*/}*.css',
           dest: '.tmp/styles/'
         }]
-      }
-    },
-
-    // Debugging with node inspector
-    'node-inspector': {
-      custom: {
-        options: {
-          'web-host': 'localhost'
-        }
-      }
-    },
-
-    // Use nodemon to run server in debug mode with an initial breakpoint
-    nodemon: {
-      debug: {
-        script: 'server/app.js',
-        options: {
-          nodeArgs: ['--debug-brk'],
-          env: {
-            PORT: process.env.PORT || 9000
-          },
-          callback: function (nodemon) {
-            nodemon.on('log', function (event) {
-              console.log(event.colour);
-            });
-
-            // opens browser on initial server start
-            nodemon.on('config:update', function () {
-              setTimeout(function () {
-                require('open')('http://localhost:8080/debug?port=5858');
-              }, 500);
-            });
-          }
-        }
       }
     },
 
@@ -324,32 +337,6 @@ module.exports = function (grunt) {
       }
     },
 
-    // The following *-min tasks will produce minified files in the dist folder
-    // By default, your `index.html`'s <!-- Usemin block --> will take care of
-    // minification. These next options are pre-configured if you do not wish
-    // to use the Usemin blocks.
-    // cssmin: {
-    //   dist: {
-    //     files: {
-    //       '<%= pt.dist %>/styles/main.css': [
-    //         '.tmp/styles/{,*/}*.css'
-    //       ]
-    //     }
-    //   }
-    // },
-    // uglify: {
-    //   dist: {
-    //     files: {
-    //       '<%= pt.dist %>/scripts/scripts.js': [
-    //         '<%= pt.dist %>/scripts/scripts.js'
-    //       ]
-    //     }
-    //   }
-    // },
-    // concat: {
-    //   dist: {}
-    // },
-
     imagemin: {
       dist: {
         files: [{
@@ -431,6 +418,23 @@ module.exports = function (grunt) {
           cwd: '.tmp/images',
           dest: '<%= pt.dist %>/images',
           src: ['generated/*']
+        }, {
+          expand: true,
+          dest: '<%= pt.dist %>',
+          src: [
+            'package.json',
+            'server/**/*'
+          ]
+        }]
+      },
+      dev: {
+        files: [{
+          expand: true,
+          cwd: '.tmp/concat/scripts',
+          dest: '<%= pt.dist %>/scripts',
+          src: [
+            '*.js'
+          ]
         }]
       },
       styles: {
@@ -440,28 +444,6 @@ module.exports = function (grunt) {
         src: '{,*/}*.css'
       }
     },
-
-    // buildcontrol: {
-    //   options: {
-    //     dir: 'dist',
-    //     commit: true,
-    //     push: true,
-    //     connectCommits: false,
-    //     message: 'Built %sourceName% from commit %sourceCommit% on branch %sourceBranch%'
-    //   },
-    //   heroku: {
-    //     options: {
-    //       remote: 'heroku',
-    //       branch: 'master'
-    //     }
-    //   },
-    //   openshift: {
-    //     options: {
-    //       remote: 'openshift',
-    //       branch: 'master'
-    //     }
-    //   }
-    // },
 
     // Run some tasks in parallel to speed up the build process
     concurrent: {
@@ -512,15 +494,6 @@ module.exports = function (grunt) {
           ]
         }
       }
-    },
-    env: {
-      test: {
-        NODE_ENV: 'test'
-      },
-      prod: {
-        NODE_ENV: 'production'
-      },
-      all: localConfig
     }
   });
 
@@ -542,13 +515,21 @@ module.exports = function (grunt) {
 
   grunt.registerTask('serve', 'Compile then start a connect web server', function (target) {
     if (target === 'dist') {
-      return grunt.task.run(['build', 'env:all', 'env:prod', 'express:prod', 'wait', 'open', 'express-keepalive']);
+      return grunt.task.run([
+        'build', 
+        'env:all', 
+        'env:prod', 
+        'express:prod', 
+        'wait', 
+        'open', 
+        'express-keepalive'
+        ]);
     }
 
     if (target === 'debug') {
       return grunt.task.run([
         'string-replace:dev',
-        'clean:server',
+        'clean',
         'env:all',
         'concurrent:server',
         'wiredep',
@@ -558,22 +539,27 @@ module.exports = function (grunt) {
     }
 
     grunt.task.run([
-      'string-replace:dev',
-      'clean:server',
-      'env:all',
-      'concurrent:server',
-      'wiredep',
-      'autoprefixer',
-      'express:dev',
-      'wait',
-      'open',
-      'watch'
+      'dev', 
+      'env:all', 
+      'env:prod', 
+      'express:prod', 
+      'wait', 
+      'open', 
+      'express-keepalive'
     ]);
-  });
 
-  grunt.registerTask('server', 'DEPRECATED TASK. Use the "serve" task instead', function (target) {
-    grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
-    grunt.task.run(['serve:' + target]);
+    // grunt.task.run([
+    //   'string-replace:dev',
+    //   'clean:server',
+    //   'env:all',
+    //   'concurrent:server',
+    //   'wiredep',
+    //   'autoprefixer',
+    //   'express:dev',
+    //   'wait',
+    //   'open',
+    //   'watch'
+    // ]);
   });
 
   grunt.registerTask('test', [
@@ -603,9 +589,32 @@ module.exports = function (grunt) {
     'htmlmin'
   ]);
 
+  grunt.registerTask('dev', [
+    'string-replace:dev',
+    'clean:dist',
+    'wiredep',
+    'useminPrepare',
+    'concurrent:dist',
+    'autoprefixer',
+    'concat',
+    'ngAnnotate',
+    'copy:dist',
+    'cdnify',
+    'cssmin',
+    'uglify',
+    'copy:dev',
+    'filerev',
+    'usemin'
+  ]);
+
   grunt.registerTask('default', [
     'newer:jshint',
     'test',
     'build'
   ]);
+
+  grunt.registerTask('server', 'DEPRECATED TASK. Use the "serve" task instead', function (target) {
+    grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
+    grunt.task.run(['serve:' + target]);
+  });
 };

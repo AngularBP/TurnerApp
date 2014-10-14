@@ -23,7 +23,7 @@ var server = http.createServer(app);
 app.use('/api/', expressJwt({secret: secret}));
 app.use(bodyParser.json());
 
-app.use(express.static(path.join(__dirname, '/../app')));
+app.use(express.static(path.join(__dirname, '/..')));
 app.use('/bower_components',express.static(path.join(__dirname, '/../bower_components')));
 
 app.use(function(err, req, res, next){
