@@ -101,54 +101,6 @@ module.exports = function (grunt) {
       all: localConfig
     },
 
-    //disabled for express
-    // // The actual grunt server settings
-    // connect: {
-    //   options: {
-    //     port: 9000,
-    //     // Change this to '0.0.0.0' to access the server from outside.
-    //     hostname: 'localhost',
-    //     livereload: 35729
-    //   },
-    //   livereload: {
-    //     options: {
-    //       open: true,
-    //       middleware: function (connect) {
-    //         return [
-    //           connect.static('.tmp'),
-    //           connect().use(
-    //             '/bower_components',
-    //             connect.static('./bower_components')
-    //           ),
-    //           connect.static(appConfig.app)
-    //         ];
-    //       }
-    //     }
-    //   },
-    //   test: {
-    //     options: {
-    //       port: 9001,
-    //       middleware: function (connect) {
-    //         return [
-    //           connect.static('.tmp'),
-    //           connect.static('test'),
-    //           connect().use(
-    //             '/bower_components',
-    //             connect.static('./bower_components')
-    //           ),
-    //           connect.static(appConfig.app)
-    //         ];
-    //       }
-    //     }
-    //   },
-    //   dist: {
-    //     options: {
-    //       open: true,
-    //       base: '<%= pt.dist %>'
-    //     }
-    //   }
-    // },
-
     //******************Node & Express End*******************
     // Watches files for changes and runs tasks based on the changed files
     watch: {
@@ -411,7 +363,7 @@ module.exports = function (grunt) {
             '*.html',
             'views/{,*/}*.html',
             'images/{,*/}*.{webp}',
-            'fonts/*'
+            'styles/fonts/*'
           ]
         }, {
           expand: true,
